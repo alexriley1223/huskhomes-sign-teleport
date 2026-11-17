@@ -1,0 +1,13 @@
+name: HHST
+description: Teleport via signs using native Husk Homes warps
+author: alexriley1223
+version: 1.0.0
+main: com.alexriley.me.hhSignTeleport.HHST
+api-version: '26.3'
+load: POSTWORLD
+
+dependencies:
+  server:
+    HuskHomes:
+      load: BEFORE
+      required: true
