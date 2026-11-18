@@ -10,10 +10,15 @@ version = "1.0.0"
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+
+    maven {
+        url = uri("https://repo.william278.net/releases")
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.3.build.+")
+    compileOnly("net.william278.huskhomes:huskhomes-bukkit:4.11.1")
     implementation(libs.kotlin.stdlib)
 }
 
