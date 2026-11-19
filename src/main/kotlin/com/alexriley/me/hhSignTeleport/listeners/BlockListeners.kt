@@ -2,7 +2,9 @@ package com.alexriley.me.hhSignTeleport.listeners
 
 import com.alexriley.me.hhSignTeleport.HHST
 import com.alexriley.me.hhSignTeleport.permissions.HHSTPermission
+import com.alexriley.me.hhSignTeleport.utils.SignUtils
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.block.Sign
 import org.bukkit.block.sign.Side
 import org.bukkit.event.Listener
@@ -39,11 +41,7 @@ class BlockListeners(private val plugin: HHST) : Listener {
         val brokenSide = sign.getTargetSide(player);
 
         // TODO: Add further supported sign types
-        val firstLine = brokenSide.line(0);
-        val firstLineExpected = Component.text("[hhw]");
-
-        // Not a warp sign
-        if (firstLine != firstLineExpected) { return; }
+        if (!SignUtils.isLineMatching(brokenSide.line(0), "[hhw]")) { return; }
 
         if (!player.hasPermission(HHSTPermission.SIGN_REMOVE.node)) {
             event.isCancelled = true;
@@ -64,12 +62,9 @@ class BlockListeners(private val plugin: HHST) : Listener {
         val otherSide = if (eventSide == Side.FRONT) Side.BACK else Side.FRONT;
 
         val otherSignSide = sign.getSide(otherSide);
-        val modifiedSignSide = sign.getSide(eventSide);
+        val modifiedSignSide = sign.getTargetSide(event.player);
 
-        val firstLine = event.line(0);
-        val firstLineExpected = Component.text("[hhw]");
-
-        if (firstLine != firstLineExpected) { return; }
+        if (!SignUtils.isLineMatching(event.line(0), "[hhw]")) { return; }
 
         event.isCancelled = true;
 
@@ -82,9 +77,13 @@ class BlockListeners(private val plugin: HHST) : Listener {
 
             // Mirror to the other side
             event.lines().forEachIndexed { index, component ->
+                // Warp Side
                 modifiedSignSide.line(index, component);
                 otherSignSide.line(index, component);
             }
+
+            SignUtils.colorLine(modifiedSignSide, 0, NamedTextColor.GOLD);
+            SignUtils.colorLine(otherSignSide, 0, NamedTextColor.GOLD);
 
             sign.update();
         } else {

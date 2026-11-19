@@ -1,5 +1,6 @@
-package com.alexriley.me.hhSignTeleport
+package com.alexriley.me.hhSignTeleport.hooks
 
+import com.alexriley.me.hhSignTeleport.HHST
 import net.william278.huskhomes.api.HuskHomesAPI
 import org.bukkit.entity.Player
 

@@ -2,7 +2,7 @@ package com.alexriley.me.hhSignTeleport.listeners
 
 import com.alexriley.me.hhSignTeleport.HHST
 import com.alexriley.me.hhSignTeleport.permissions.HHSTPermission
-import net.kyori.adventure.text.Component
+import com.alexriley.me.hhSignTeleport.utils.SignUtils
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
@@ -31,13 +31,7 @@ class PlayerListeners(private val plugin: HHST) : Listener {
         val sign = event.clickedBlock?.state as Sign;
         val clickedSide = sign.getTargetSide(event.player);
 
-        val firstLine = clickedSide.line(0);
-        val firstLineExpected = Component.text("[hhw]");
-
-        // Not a warp sign
-        if (firstLine != firstLineExpected) {
-            return;
-        }
+        if (!SignUtils.isLineMatching(clickedSide.line(0), "[hhw]")) { return; }
 
         // Edit check
         if (event.player.isSneaking) {
