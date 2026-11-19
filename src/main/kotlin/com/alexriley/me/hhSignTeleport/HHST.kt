@@ -32,11 +32,13 @@ class HHST : JavaPlugin() {
         permissionManager.registerAll()
 
         saveDefaultConfig()
+        checkConfigVersion()
         registerListeners()
         registerCommands()
 
         logger.info("HHST ready to go!")
     }
+
     override fun onDisable() {
         if (::permissionManager.isInitialized) {
             permissionManager.unregisterAll();
@@ -53,6 +55,7 @@ class HHST : JavaPlugin() {
 
         listeners.forEach { listener -> server.pluginManager.registerEvents(listener, this) }
     }
+
     private fun registerCommands() {
         val commands: List<HHSTCommand> = listOf(
             IgnorePromptsCommand(this)
@@ -61,6 +64,21 @@ class HHST : JavaPlugin() {
         lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) { event ->
             val registrar = event.registrar()
             commands.forEach { it.register(registrar) }
+        }
+    }
+
+    private fun checkConfigVersion() {
+        val currentVersion = pluginMeta.version;
+        val savedVersion = config.getString("config-version");
+
+        if (savedVersion == null || savedVersion != currentVersion) {
+            logger.info("Config version mismatch. (found: $savedVersion, expected: $currentVersion). Updating config...");
+
+            // Any migration manual checks here
+
+            config.options().copyDefaults(true);
+            config.set("config-version", currentVersion);
+            saveConfig();
         }
     }
 }
