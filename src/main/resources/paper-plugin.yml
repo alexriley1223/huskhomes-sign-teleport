@@ -6,6 +6,9 @@ main: com.alexriley.me.hhSignTeleport.HHST
 api-version: '26.3'
 load: POSTWORLD
 
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:2.4.21  # match Kotlin version
+
 dependencies:
   server:
     HuskHomes:

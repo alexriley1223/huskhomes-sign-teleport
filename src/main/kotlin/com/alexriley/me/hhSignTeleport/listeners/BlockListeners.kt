@@ -1,6 +1,7 @@
 package com.alexriley.me.hhSignTeleport.listeners
 
 import com.alexriley.me.hhSignTeleport.HHST
+import com.alexriley.me.hhSignTeleport.permissions.HHSTPermission
 import net.kyori.adventure.text.Component
 import org.bukkit.block.Sign
 import org.bukkit.block.sign.Side
@@ -19,7 +20,7 @@ class BlockListeners(private val plugin: HHST) : Listener {
         val blockState = block.state;
 
         // Hint msg
-        if (!plugin.playerDataManager.getIgnoreSetting(event.player.uniqueId)) {
+        if (!plugin.playerDataManager.getIgnoreSetting(player.uniqueId)) {
             if (blockState is Sign) {
                 player.sendPlainMessage("Use [hhw] to create an HHST sign.")
             }
@@ -32,21 +33,26 @@ class BlockListeners(private val plugin: HHST) : Listener {
         val block = event.block;
         val blockState = block.state;
 
-        // Hint msg
-        if (!plugin.playerDataManager.getIgnoreSetting(event.player.uniqueId)) {
-            if (blockState !is Sign) { return; }
+        if (blockState !is Sign) { return; }
 
-            // Todo: check both sides and mirror them on save to avoid this weird side condition
-            val sign = event.block.state as Sign;
-            val brokenSide = sign.getTargetSide(event.player);
+        val sign = event.block.state as Sign;
+        val brokenSide = sign.getTargetSide(player);
 
-            val firstLine = brokenSide.line(0);
-            val firstLineExpected = Component.text("[hhw]");
+        // TODO: Add further supported sign types
+        val firstLine = brokenSide.line(0);
+        val firstLineExpected = Component.text("[hhw]");
 
-            // Not a warp sign
-            if (!firstLine.equals(firstLineExpected)) { return; }
+        // Not a warp sign
+        if (firstLine != firstLineExpected) { return; }
 
-            player.sendPlainMessage("HHST sign broken!");
+        if (!player.hasPermission(HHSTPermission.SIGN_REMOVE.node)) {
+            event.isCancelled = true;
+            player.sendPlainMessage("You don't have permission to break a HHST sign!")
+        } else {
+            // Hint msg
+            if (!plugin.playerDataManager.getIgnoreSetting(player.uniqueId)) {
+                player.sendPlainMessage("HHST sign broken!");
+            }
         }
     }
 
@@ -63,8 +69,11 @@ class BlockListeners(private val plugin: HHST) : Listener {
         val firstLine = event.line(0);
         val firstLineExpected = Component.text("[hhw]");
 
-        // Check if it's a warp
-        if (firstLine?.equals(firstLineExpected) ?: return) {
+        if (firstLine != firstLineExpected) { return; }
+
+        event.isCancelled = true;
+
+        if (event.player.hasPermission(HHSTPermission.SIGN_CREATE.node)) {
             // Check if the warp is valid
             // [0] - [hhw] - already checked
             // [1] - warp name - check via HH API
@@ -77,9 +86,11 @@ class BlockListeners(private val plugin: HHST) : Listener {
                 otherSignSide.line(index, component);
             }
 
-            // Update the block
             sign.update();
-            event.isCancelled = true;
+        } else {
+            event.player.sendPlainMessage("You do not have permission to create a HHST sign!");
+            modifiedSignSide.line(0, Component.text(""));
+            sign.update();
         }
     }
 }

@@ -25,14 +25,15 @@ Simply interact with a sign with an empty primary hand. This will trigger the wa
 Crouching and interacting will allow editing of the sign
 
 ## To Do
-- [ ] Permissions
-  - [ ] Create warp signs
-  - [ ] Edit warp signs (Player, Other Player)
-  - [ ] Remove warp signs (Player, Other Player)
+- [x] Permissions
+  - [x] Create warp signs
+  - [x] Edit warp signs (Player)
+  - [ ] Edit warp signs (With player create check / others)
+  - [x] Remove warp signs (All)
+  - [ ] Remove warp signs (With players remove check / others)
+  - [ ] Instant sign teleport (4th line bool)
 - [ ] Support glow and color in signs
 - [ ] Save all player warp signs position (mainly debugging/server admin/post-create editing)
-- [ ] Instant teleport on 4th line boolean
-  - [ ] Permissions supported
 - [ ] Support other HH types
   - [ ] Arbitrary X,Y,Z,dimension positions
   - [ ] Homes/PHomes

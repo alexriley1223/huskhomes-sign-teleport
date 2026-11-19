@@ -36,8 +36,6 @@ tasks {
 
     shadowJar {
         archiveClassifier.set("")
-        // Relocate Kotlin stdlib to prevent conflicts with other plugins
-        relocate("kotlin", "${project.group}.libs.kotlin")
     }
 
     build {
