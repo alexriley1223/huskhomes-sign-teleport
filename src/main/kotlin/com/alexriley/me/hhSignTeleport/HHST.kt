@@ -6,6 +6,7 @@ import com.alexriley.me.hhSignTeleport.hooks.HuskHomesHook
 import com.alexriley.me.hhSignTeleport.listeners.BlockListeners
 import com.alexriley.me.hhSignTeleport.listeners.PlayerListeners
 import com.alexriley.me.hhSignTeleport.managers.PlayerDataManager
+import com.alexriley.me.hhSignTeleport.managers.TeleportManager
 import com.alexriley.me.hhSignTeleport.permissions.PermissionManager
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import org.bukkit.plugin.java.JavaPlugin
@@ -15,13 +16,18 @@ class HHST : JavaPlugin() {
     lateinit var playerDataManager: PlayerDataManager
         private set
 
+    lateinit var teleportManager: TeleportManager
+        private set
+
     var huskHomesHook: HuskHomesHook? = null
         private set
 
     private lateinit var permissionManager: PermissionManager
 
     override fun onEnable() {
+        // Managers
         playerDataManager = PlayerDataManager(this)
+        teleportManager = TeleportManager(this)
 
         // Verify HH exists
         if (server.pluginManager.isPluginEnabled("HuskHomes")) {

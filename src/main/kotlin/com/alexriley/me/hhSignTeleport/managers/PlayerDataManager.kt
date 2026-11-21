@@ -13,9 +13,9 @@ class PlayerDataManager(private val plugin: HHST) {
     private var config: YamlConfiguration
 
     data class SavedSignObject(
-        val x: Double,
-        val y: Double,
-        val z: Double,
+        val x: Int,
+        val y: Int,
+        val z: Int,
         val active: Boolean,
     )
 
@@ -36,7 +36,7 @@ class PlayerDataManager(private val plugin: HHST) {
         config.set("players.$uuid.ignore", ignore)
         save()
     }
-    fun addWarpSign(uuid: UUID, x: Double, y: Double, z: Double, active: Boolean) {
+    fun addWarpSign(uuid: UUID, x: Int, y: Int, z: Int, active: Boolean) {
         val objPath = "players.$uuid.signs";
 
         val signs = config.getMapList(objPath).toMutableList();
@@ -60,21 +60,21 @@ class PlayerDataManager(private val plugin: HHST) {
         val objPath = "players.$uuid.signs";
 
         return config.getMapList(objPath).mapNotNull { map ->
-            val x = (map["x"] as? Number)?.toDouble() ?: return@mapNotNull null
-            val y = (map["y"] as? Number)?.toDouble() ?: return@mapNotNull null
-            val z = (map["z"] as? Number)?.toDouble() ?: return@mapNotNull null
+            val x = (map["x"] as? Number)?.toInt() ?: return@mapNotNull null
+            val y = (map["y"] as? Number)?.toInt() ?: return@mapNotNull null
+            val z = (map["z"] as? Number)?.toInt() ?: return@mapNotNull null
             val active = map["active"] as? Boolean ?: false
 
-            SavedSignObject(x, y, z, active);
+            SavedSignObject(x, y, z, active)
         }
     }
-    fun getWarpSign(uuid: UUID, x: Double, y: Double, z: Double): SavedSignObject? {
+    fun getWarpSign(uuid: UUID?, x: Int, y: Int, z: Int): SavedSignObject? {
         val objPath = "players.$uuid.signs";
 
         val match = config.getMapList(objPath).firstOrNull { map ->
-            val objX = (map["x"] as? Number)?.toDouble()
-            val objY = (map["y"] as? Number)?.toDouble()
-            val objZ = (map["z"] as? Number)?.toDouble()
+            val objX = (map["x"] as? Number)?.toInt()
+            val objY = (map["y"] as? Number)?.toInt()
+            val objZ = (map["z"] as? Number)?.toInt()
 
             objX == x && objY == y && objZ == z
         } ?: return null
@@ -83,6 +83,8 @@ class PlayerDataManager(private val plugin: HHST) {
 
         return SavedSignObject(x, y, z, active);
     }
+
+    // TODO: Keep maps in memory and write to disc asynchronously to avoid O(n) on removal checking
 
     // Operators
     fun save() {

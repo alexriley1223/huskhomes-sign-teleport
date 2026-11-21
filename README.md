@@ -9,7 +9,7 @@ enhanced support for Geyser/Floodgate controller users.
 ### Sign Setup
 ```
 +-------------------+
-|       [hhw]       |
+|    [identifier]   |
 |     warp name     | 
 |                   |
 |                   |
@@ -18,6 +18,13 @@ enhanced support for Geyser/Floodgate controller users.
          | |
          | |
 ```
+
+### Available Identifiers
+- hhw - /warp
+- hhspawn - /spawn
+- hhback - Player defined /back
+- hhh - Player defined /home
+- hhrtp - /rtp
 
 ### Using a Warp
 Simply interact with a sign with an empty primary hand. This will trigger the warp listed.
@@ -33,15 +40,16 @@ Crouching and interacting will allow editing of the sign
   - [ ] Remove warp signs (With players remove check / others)
   - [ ] Instant sign teleport (4th line bool)
 - [x] Support glow and color in signs
-  - All warp signs automatically given a color on the [identifier]
+  - All warp signs automatically given a color on the [identifier] 
 - [ ] Save all player warp signs position (mainly debugging/server admin/post-create editing)
 - [ ] Support other HH types
   - [ ] Arbitrary X,Y,Z,dimension positions
-  - [ ] Homes/PHomes
-  - [ ] RTP
+  - [x] Homes
+  - [ ] PHomes
+  - [x] RTP
   - [ ] Print warp lists (for Geyser/Floodgate users)
-  - [ ] Spawn
-  - [ ] Back
+  - [x] Spawn
+  - [x] Back
 - [ ] Customization
   - [ ] Warp identifier
   - [ ] Specific sign types only?

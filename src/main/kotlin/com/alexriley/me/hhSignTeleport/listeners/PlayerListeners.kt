@@ -2,8 +2,7 @@ package com.alexriley.me.hhSignTeleport.listeners
 
 import com.alexriley.me.hhSignTeleport.HHST
 import com.alexriley.me.hhSignTeleport.permissions.HHSTPermission
-import com.alexriley.me.hhSignTeleport.utils.SignUtils
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import com.alexriley.me.hhSignTeleport.utils.SignUtils.parseTeleportType
 import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -26,27 +25,26 @@ class PlayerListeners(private val plugin: HHST) : Listener {
             return;
         }
 
-        // Check if warp sign
-        // TODO: Handle multiple types of warps
+        // Check if valid identifier
         val sign = event.clickedBlock?.state as Sign;
         val clickedSide = sign.getTargetSide(event.player);
 
-        if (!SignUtils.isLineMatching(clickedSide.line(0), "[hhw]")) { return; }
+        val type = parseTeleportType(clickedSide.line(0)) ?: return
 
         // Edit check
         if (event.player.isSneaking) {
             if (!event.player.hasPermission(HHSTPermission.SIGN_EDIT.node)) {
                 event.isCancelled = true;
-                event.player.sendPlainMessage("You don't have permission to modify a HHST sign!")
+                event.player.sendRichMessage("<red>You don't have permission to modify a HHST sign!")
             }
         } else {
             event.isCancelled = true;
 
             // Use check / TP
             if (event.player.hasPermission(HHSTPermission.SIGN_USE.node)) {
-                plugin.huskHomesHook?.teleportPlayerToWarp(event.player, PlainTextComponentSerializer.plainText().serialize(clickedSide.line(1)));
+                plugin.teleportManager.handle(type, sign, event.player);
             } else {
-                event.player.sendPlainMessage("You don't have permission to use a HHST sign!");
+                event.player.sendRichMessage("<red>You don't have permission to use a HHST sign!");
             }
         }
     }

@@ -9,15 +9,9 @@ object SignUtils {
 
     private val plainSerializer = PlainTextComponentSerializer.plainText()
 
-    // Plaintext matching ignores text modifiers
-    fun isLineMatching(
-        component: Component?,
-        expectedText: String,
-        ignoreCase: Boolean = true
-    ): Boolean {
-        if (component == null) return false
-        val plainText = plainSerializer.serialize(component).trim()
-        return plainText.equals(expectedText, ignoreCase = ignoreCase)
+    fun parseTeleportType(component: Component?): TeleportType? {
+        if (component == null) return null
+        return TeleportType.fromIdentifier(plainSerializer.serialize(component).trim())
     }
 
     fun toPlainText(component: Component): String {
